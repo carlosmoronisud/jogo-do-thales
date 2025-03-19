@@ -92,4 +92,4 @@ function verificarRespostaArea(respostaSelecionada, respostaCorreta) {
 }
 
 // Carrega a primeira forma ao iniciar
-carregarProximaForma();
+//carregarProximaForma();
