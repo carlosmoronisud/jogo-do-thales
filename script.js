@@ -2,11 +2,13 @@ const elementoPergunta = document.getElementById("pergunta");
 const elementoAlternativas = document.getElementById("alternativas");
 const elementoResultado = document.getElementById("resultado");
 const botaoProxima = document.getElementById("proximaPergunta");
+const elementoScore = document.getElementById("score");
+
 
 function gerarPergunta() {
-    const num1 = Math.floor(Math.random() * 10) + 1; // Números de 1 a 10
+    const num1 = Math.floor(Math.random() * 10) + 1; 
     const num2 = Math.floor(Math.random() * 10) + 1;
-    const operacoes = ['+', '-', '×', '÷'];
+    const operacoes = ['+', '-', '×', '÷']; // Operações matemáticas
     const operacao = operacoes[Math.floor(Math.random() * operacoes.length)];
     let resposta;
 
@@ -14,7 +16,8 @@ function gerarPergunta() {
         case '+': resposta = num1 + num2; break;
         case '-': resposta = num1 - num2; break;
         case '×': resposta = num1 * num2; break;
-        case '÷': resposta = (num1 / num2).toFixed(2); break; // Arredonda para 2 casas decimais
+        case '÷': resposta = (num1 / num2).toFixed(2); break;
+        // Arredonda para 2 casas decimais
     }
 
     return {
@@ -53,19 +56,28 @@ function carregarPergunta() {
     });
 
     elementoResultado.textContent = "";
+
 }
 
 function verificarResposta(respostaSelecionada, respostaCorreta) {
     if (respostaSelecionada === respostaCorreta) {
-        elementoResultado.textContent = "Correto! 🎉";
-        elementoResultado.style.color = "green";
+        elementoResultado.textContent = "Parabéns Você ganhou +100 pontos 🎉";
+        elementoResultado.style.color = "blue";
+        score.textContent = parseInt(score.textContent) + 100;
+        score.style.color = "green";
+        setTimeout(() => {
+            carregarPergunta();
+        }, 2000);
+        
     } else {
-        elementoResultado.textContent = "Errado! Tente novamente. 😢";
+        elementoResultado.textContent = "Tente novamente. 😢";
         elementoResultado.style.color = "red";
+        score.textContent = parseInt(score.textContent) - 10;
+        score.style.color = "red";
     }
 }
 
-botaoProxima.addEventListener("click", carregarPergunta);
+//botaoProxima.addEventListener("click", carregarPergunta);
 
 // Carrega a primeira pergunta ao iniciar
 carregarPergunta();
