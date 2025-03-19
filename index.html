@@ -15,14 +15,34 @@
                 <li><a href="index3.html">Avançado</a></li></ul>
             </nav>
     </header>-->
+    
     <div class="container">
-        <h1>Jogo de Matemática do Thales</h1>
-        <h2> Pontos: <span id="score">0</span></h2>
-        <div id="pergunta"></div>
-        <div id="alternativas"></div>
-        <div id="resultado"></div>
-        <!--<button id="proximaPergunta">Próxima Pergunta</button>-->        
+        <div class="navegacao">
+            <button id="btn-matematica">Jogo das operações</button>
+            <button id="btn-areas">Jogo das areas das formas</button>
+        </div>
+    
+        <!-- Jogo de Matemática -->
+        <div id="jogo-matematica">
+            <h1>Jogo das operações</h1>
+            <div id="pergunta"></div>
+            <div id="alternativas"></div>
+            <div id="resultado"></div>
+            <!--<button id="proximaPergunta">Próxima Pergunta</button>-->
+        </div>
+    
+        <!-- Jogo de Áreas -->
+        <div id="jogo-areas" style="display: none;">
+            <h1>Descubra a Área das Formas</h1>
+            <div id="forma-container">
+                <img id="forma-imagem" src="" alt="Forma">
+                <div id="pergunta-area"></div>
+                <div id="alternativas-area"></div>
+                <div id="resultado-area"></div>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
+    <script src="script-areas.js"></script>
 </body>
 </html>

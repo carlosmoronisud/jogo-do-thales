@@ -1,9 +1,25 @@
+const btnMatematica = document.getElementById("btn-matematica");
+const btnAreas = document.getElementById("btn-areas");
+const jogoMatematica = document.getElementById("jogo-matematica");
+const jogoAreas = document.getElementById("jogo-areas");
 const elementoPergunta = document.getElementById("pergunta");
 const elementoAlternativas = document.getElementById("alternativas");
 const elementoResultado = document.getElementById("resultado");
 const botaoProxima = document.getElementById("proximaPergunta");
 const elementoScore = document.getElementById("score");
 
+// Mostra o jogo de matemática e esconde o de áreas
+btnMatematica.addEventListener("click", () => {
+    jogoMatematica.style.display = "block";
+    jogoAreas.style.display = "none";
+});
+
+// Mostra o jogo de áreas e esconde o de matemática
+btnAreas.addEventListener("click", () => {
+    jogoAreas.style.display = "block";
+    jogoMatematica.style.display = "none";
+    carregarProximaForma(); // Carrega a primeira pergunta do jogo de áreas
+});
 
 function gerarPergunta() {
     const num1 = Math.floor(Math.random() * 10) + 1; 
