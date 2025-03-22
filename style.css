@@ -46,7 +46,7 @@ button:hover {
     color : black;
 }
 
-#resultado {
+#resultado, #resultado-area, #resultado-bandeira {
     margin-top: 20px;
     font-size: 2em;
     font-weight: bold;
@@ -92,4 +92,22 @@ img {
 
 .navegacao button:hover {
     background-color: #0056b3;
+}
+#bandeira-imagem {
+    
+    border-radius: 5px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 1);  
+     
+}
+#alternativas-bandeira {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 20px;
+}
+#resultado-bandeira {
+    margin-top: 20px;
+    font-size: 2em;
+    font-weight: bold;
 }

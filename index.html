@@ -20,12 +20,13 @@
         <div class="navegacao">
             <button id="btn-matematica">Jogo das operações</button>
             <button id="btn-areas">Jogo das areas das formas</button>
+            <button id="btn-bandeiras">Jogo das Bandeiras</button>
         </div>
     
         <!-- Jogo de Matemática -->
         <div id="jogo-matematica">
             <h1>Jogo das operações</h1>
-            <div><h2>Pontos</h2><span id="score">0</span ></div>
+            <div><h2>Pontos</h2><span id="score-op">0</span ></div>
             <div id="pergunta"></div>
             <div id="alternativas"></div>
             <div id="resultado"></div>
@@ -35,6 +36,7 @@
         <!-- Jogo de Áreas -->
         <div id="jogo-areas" style="display: none;">
             <h1>Descubra a Área das Formas</h1>
+            <h2 >Pontos <span id="score-area">0</span></h2>
             <div id="forma-container">
                 <img id="forma-imagem" src="" alt="Forma">
                 <div id="pergunta-area"></div>
@@ -42,7 +44,20 @@
                 <div id="resultado-area"></div>
             </div>
         </div>
+        <!-- Jogo da Bandeiras -->
+        <div id="jogo-bandeiras" style="display: none;">
+            <h1>De qual país é essa bandeira?</h1>
+            <h2 >Pontos <span id="score-band">0</span></h2>
+            <div id="forma-container">
+                <img id="bandeira-imagem" src="" alt="Bandeira">
+                <div id="pergunta-bandeira"></div>
+                <div id="alternativas-bandeira"></div>
+                <div id="resultado-bandeira"></div>
+            </div>
+        </div>
     </div>
+    <script src="operacoes.js"></script>
+    <script src="bandeiras.js"></script>
     <script src="script.js"></script>
     <script src="script-areas.js"></script>
 </body>
