@@ -122,13 +122,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         
         setTimeout(() => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < 10) {
-                carregarPerguntaNotas();
-            } else {
-                resultadoNotas.textContent = `Fim do jogo! Sua pontuação final é ${score}.`;
-                notaImagem.onclick = null;
-            }
+            carregarPerguntaNotas();
         }, 2000);
     }
 
