@@ -18,6 +18,8 @@
     
     <div class="container">
         <div class="navegacao">
+            <h1>Escolha o Jogo</h1>
+            <button id="btn-notas">Jogo das Notas Musicais</button>
             <button id="btn-matematica">Jogo das operações</button>
             <button id="btn-areas">Jogo das areas das formas</button>
             <button id="btn-bandeiras">Jogo das Bandeiras</button>
@@ -65,8 +67,19 @@
                 <div id="alternativas-x"></div>
                 <div id="resultado-x"></div>
             </div>
-</div>
+        </div>
+        <div id="jogo-notas" style="display: none;">
+            <h1>Jogo das Notas Musicais</h1>
+            <div>
+                <h2>Pontuação: <span id="score-notas">0</span></h2>
+            </div>
+            <img id="nota-imagem" src="https://cdn-icons-png.flaticon.com/512/3665/3665923.png" alt="Nota Musical">
+            <div id="pergunta-notas">Qual nota musical você ouviu?</div>
+            <div id="alternativas-notas"></div>
+            <div id="resultado-notas"></div>
+        </div>
     </div>
+    <script src="notas-musicais.js"></script>
     <script src="script-x.js"></script>
     <script src="operacoes.js"></script>
     <script src="bandeiras.js"></script>

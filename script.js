@@ -6,6 +6,8 @@ const jogoMatematica = document.getElementById("jogo-matematica");
 const jogoAreas = document.getElementById("jogo-areas");
 const jogoBandeiras = document.getElementById("jogo-bandeiras");
 const jogoX = document.getElementById('jogo-x');
+const btnNotasMusicais = document.getElementById('btn-notas');
+const jogoNotasMusicais = document.getElementById('jogo-notas');
 
 
 // Mostra o jogo de matemática e esconde o de áreas
@@ -13,6 +15,7 @@ btnMatematica.addEventListener("click", () => {
     jogoMatematica.style.display = "block";
     jogoBandeiras.style.display = "none";
     jogoAreas.style.display = "none";
+    jogoNotasMusicais.style.display = "none";
     jogoX.style.display = "none";
 });
 
@@ -22,6 +25,7 @@ btnAreas.addEventListener("click", () => {
     jogoMatematica.style.display = "none";
     jogoBandeiras.style.display = "none";
     jogoX.style.display = "none";
+    jogoNotasMusicais.style.display = "none";
     carregarProximaForma();
     // Carrega a primeira pergunta do jogo de áreas
 });
@@ -31,6 +35,7 @@ btnBandeiras.addEventListener("click", () => {
     jogoMatematica.style.display = "none";
     jogoAreas.style.display = "none";
     jogoX.style.display = "none";
+    jogoNotasMusicais.style.display = "none";
     iniciarJogo(); // Carrega a primeira pergunta do jogo de bandeiras
 });
 // Mostra o jogo do X Misterioso e esconde os outros
@@ -39,5 +44,15 @@ btnX.addEventListener("click", () => {
     jogoMatematica.style.display = "none";
     jogoAreas.style.display = "none";
     jogoBandeiras.style.display = "none";
+    jogoNotasMusicais.style.display = "none";
     iniciarJogo(); // Carrega a primeira pergunta do jogo de bandeiras
+});
+// Mostra o jogo das notas musicais e esconde os outros
+btnNotasMusicais.addEventListener("click", () => {
+    jogoNotasMusicais.style.display = "block";
+    jogoX.style.display = "none";
+    jogoMatematica.style.display = "none";
+    jogoAreas.style.display = "none";
+    jogoBandeiras.style.display = "none";
+    initAudio(); // Carrega a primeira pergunta do jogo de bandeiras
 });
