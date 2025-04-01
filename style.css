@@ -117,6 +117,9 @@ img {
     margin: 20px auto;
     cursor: pointer;
 }
+#nota-imagem:hover {
+    transform: scale(1.1);
+}
 #alternativas-notas {
     display: flex;
     flex-direction: column;
@@ -140,4 +143,68 @@ img {
     font-size: 24px;
     font-weight: bold;
     margin: 10px;
+}
+.btn-modo {
+    padding: 8px 16px;
+    background-color: #843e96;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 15px;
+    transition: all 0.3s;
+}
+
+.btn-modo:hover {
+    background-color: #6045a0;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+ #alternativas-capital {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 10px;
+    margin: 15px;
+    padding: 15px;    
+    background-color: #874caf;
+    border-radius: 5px;
+
+}
+#alternativas-capital button {
+    background-color: #4CAF50;
+    color: white;
+    border: solid 1px #874caf;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+}
+
+#alternativas-bandeira, #alternativas-capital {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+}
+
+#alternativas-bandeira button, #alternativas-capital button {
+    padding: 10px 20px;
+    width: 200px;
+    font-size: 16px;
+    cursor: pointer;    
+    border-radius: 5px;
+    background-color: #4CAF50;
+    transition: all 0.2s;
+}
+
+#alternativas-bandeira button:hover, #alternativas-capital button:hover {
+    background-color: yellow;
+    color: white;
+    transform: scale(1.05);
 }

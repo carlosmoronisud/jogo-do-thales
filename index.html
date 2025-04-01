@@ -49,12 +49,13 @@
         </div>
         <!-- Jogo da Bandeiras -->
         <div id="jogo-bandeiras" style="display: none;">
-            <h1>De qual país é essa bandeira?</h1>
-            <h2 >Pontos <span id="score-band">0</span></h2>
+            <button id="btn-alternar-modo" class="btn-modo">Modo: País (clique para Capital)</button>
+            <h1 id="pergunta-bandeira">De qual país é essa bandeira?</h1>
+            <h2>Pontos <span id="score-band">0</span></h2>
             <div id="forma-container">
                 <img id="bandeira-imagem" src="" alt="Bandeira">
-                <div id="pergunta-bandeira"></div>
                 <div id="alternativas-bandeira"></div>
+                <div id="alternativas-capital" style="display: none;"></div> <!-- Novo container para capitais -->
                 <div id="resultado-bandeira"></div>
             </div>
         </div>
