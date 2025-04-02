@@ -46,17 +46,21 @@ button:hover {
     color : black;
 }
 
-#resultado, #resultado-area, #resultado-bandeira {
+#resultado, #resultado-area, #resultado-bandeira, #resultado-capital, #resultado-x, #resultado-notas {
     margin-top: 20px;
     font-size: 2em;
     font-weight: bold;
 }
-#alternativas-area {
+#alternativas-area, #alternativas-x, #alternativas-notas, #alternativas-capital, #alternativas-bandeira {
     display: flex;
+    justify-content: space-evenly;
     flex-direction: column;
     gap: 10px;
-    margin-top: 20px;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
 }
+
 
 #alternativas-area button {
     background-color: #007bff;
@@ -99,7 +103,7 @@ img {
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 1);  
      
 }
-#alternativas-bandeira {
+/* #alternativas-bandeira {
     display: flex;
     justify-content: center;
     flex-direction: row;
@@ -110,7 +114,7 @@ img {
     margin-top: 20px;
     font-size: 2em;
     font-weight: bold;
-}
+} */
 #nota-imagem {
     width: 100px;
     height: 100px;
@@ -155,44 +159,21 @@ img {
     margin-bottom: 15px;
     transition: all 0.3s;
 }
-
 .btn-modo:hover {
     background-color: #6045a0;
     color: #fff;
     transform: scale(1.05);
 }
-
- #alternativas-capital {
-    display: flex;
-    justify-content: space-evenly;
-    gap: 10px;
-    margin: 15px;
-    padding: 15px;    
-    background-color: #874caf;
-    border-radius: 5px;
-
-}
 #alternativas-capital button {
     background-color: #4CAF50;
     color: white;
-    border: solid 1px #874caf;
+    border: solid 5px #874caf;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
     transition: all 0.2s;
 }
-
-#alternativas-bandeira, #alternativas-capital {
-    display: flex;
-    justify-content: space-evenly;
-    flex-direction: wrap;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    margin: 20px;
-}
-
 #alternativas-bandeira button, #alternativas-capital button {
     padding: 10px 20px;
     width: 200px;
@@ -202,7 +183,6 @@ img {
     background-color: #4CAF50;
     transition: all 0.2s;
 }
-
 #alternativas-bandeira button:hover, #alternativas-capital button:hover {
     background-color: yellow;
     color: white;
