@@ -1,0 +1,65 @@
+/* ============================================================
+   FRACTIONS GAME - Estilos específicos
+   ============================================================ */
+
+/* Card de fração */
+.fraction-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
+}
+
+.fraction-question {
+  text-align: center;
+}
+
+.fraction-visual-container {
+  margin-bottom: 20px;
+}
+
+.fraction-description {
+  font-size: 18px;
+  color: var(--text-dark);
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+/* Opções de fração */
+.fractions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.fraction-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px !important;
+}
+
+.fraction-option-value {
+  font-size: 28px;
+  font-weight: bold;
+  font-family: 'Fredoka One', sans-serif;
+}
+
+/* Animações especiais para acertos */
+@keyframes celebrate {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.correct-animation {
+  animation: celebrate 0.3s ease;
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .fraction-option-value {
+    font-size: 22px;
+  }
+  
+  .fraction-option-visual {
+    font-size: 18px;
+  }
+}
