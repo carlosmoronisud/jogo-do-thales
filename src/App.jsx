@@ -1,4 +1,4 @@
-// src/App.jsx (com hash router para Vercel)
+// src/App.jsx (com HashRouter para evitar 404)
 import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import ProfilePage from './pages/ProfilePage'

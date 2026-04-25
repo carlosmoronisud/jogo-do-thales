@@ -1,4 +1,4 @@
-// src/pages/ProfilePage.jsx (com botão de deletar perfil)
+// src/pages/ProfilePage.jsx (com botão de deletar)
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useGameStore } from '../store/gameStore'
@@ -28,25 +28,20 @@ export default function ProfilePage() {
 
   const handleDeletePlayer = useCallback((playerId, playerName) => {
     if (confirm(`Tem certeza que deseja deletar o perfil "${playerName}"? Todas as estatísticas serão perdidas.`)) {
-      // Recuperar dados do localStorage
       const stored = localStorage.getItem('game-storage')
       if (stored) {
         const data = JSON.parse(stored)
         const playersList = data.state?.players || []
         const updatedPlayers = playersList.filter(p => p.id !== playerId)
         
-        // Se o jogador deletado era o ativo, limpar activePlayer
         if (data.state?.activePlayer?.id === playerId) {
           data.state.activePlayer = updatedPlayers.length > 0 ? updatedPlayers[0] : null
         }
         
         data.state.players = updatedPlayers
         localStorage.setItem('game-storage', JSON.stringify(data))
-        
-        // Recarregar a store
         loadPlayers()
         
-        // Se não houver mais jogadores, ir para tela inicial
         if (updatedPlayers.length === 0) {
           navigate('/')
         }

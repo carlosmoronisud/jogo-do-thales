@@ -1,4 +1,4 @@
-// src/games/NumberShooter/scenes/NumberShooterScene.js (com botão de reinício)
+// src/games/NumberShooter/scenes/NumberShooterScene.js (versão corrigida - sem quebra)
 import Phaser from 'phaser'
 import { telemetryService } from '../../../services/TelemetryService'
 
@@ -492,7 +492,7 @@ export default class NumberShooterScene extends Phaser.Scene {
     const btnSpacing = 20
     const startX = (width - (btnWidth * 2 + btnSpacing)) / 2
     
-    // Botão Jogar Novamente
+    // Botão Jogar Novamente - Recarrega a página para reiniciar tudo
     const replayBtn = this.add.rectangle(startX + btnWidth / 2, titleY + 170, btnWidth, btnHeight, 0x4CC9F0)
     replayBtn.setInteractive({ useHandCursor: true })
     replayBtn.setDepth(201)
@@ -504,7 +504,8 @@ export default class NumberShooterScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(201)
     
     replayBtn.on('pointerdown', () => {
-      this.scene.restart()
+      // Recarregar a página para reiniciar o jogo completamente
+      window.location.reload()
     })
     
     // Botão Sair
@@ -522,12 +523,10 @@ export default class NumberShooterScene extends Phaser.Scene {
       if (this.onGameComplete) {
         this.onGameComplete({ score: gameScore, level: this.currentLevel, targetsDestroyed: this.targetsDestroyed })
       }
-      setTimeout(() => {
-        window.location.href = '/hub'
-      }, 100)
+      // Ir para o hub
+      window.location.href = '/hub'
     })
     
-    // Efeito de fade in
     overlay.setAlpha(0)
     this.tweens.add({
       targets: overlay,
