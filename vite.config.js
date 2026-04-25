@@ -11,7 +11,11 @@ export default defineConfig({
   server: {
     port: 3000
   },
+  build: {
+    outDir: 'dist',
+    sourcemap: true
+  },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', 'zustand', 'phaser']
-  }
+  }  
 })
