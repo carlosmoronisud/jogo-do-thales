@@ -1,8 +1,7 @@
-// src/pages/ProfilePage.jsx
+// src/pages/ProfilePage.jsx (atualizado)
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useGameStore } from '../store/gameStore'
-import { telemetryService } from '../services/TelemetryService'
 
 export default function ProfilePage() {
   const navigate = useNavigate()
@@ -14,81 +13,101 @@ export default function ProfilePage() {
     loadPlayers()
   }, [loadPlayers])
 
-  const handleCreatePlayer = useCallback(async () => {
+  const handleCreatePlayer = useCallback(() => {
     if (newPlayerName.trim()) {
-      const player = await createPlayer(newPlayerName.trim())
+      const player = createPlayer(newPlayerName.trim())
       setActivePlayer(player)
-      telemetryService.track('profile_created', { playerId: player.id, playerName: player.name })
       navigate('/hub')
     }
   }, [newPlayerName, createPlayer, setActivePlayer, navigate])
 
   const handleSelectPlayer = useCallback((player) => {
     setActivePlayer(player)
-    telemetryService.track('profile_selected', { playerId: player.id, playerName: player.name })
     navigate('/hub')
   }, [setActivePlayer, navigate])
 
+  // Forçar atualização da lista de jogadores
+  const playerList = players || []
+
   return (
-    <div className="min-h-screen p-4 pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-950 to-purple-950 p-4 pb-20">
       <div className="max-w-md mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Player Profiles</h1>
-          <p className="text-gray-600">Choose or create a player</p>
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-white mb-2">🎮 Jogadores</h1>
+          <p className="text-gray-300">Escolha ou crie seu perfil</p>
         </div>
 
-        {players.length > 0 && (
+        {playerList.length > 0 && (
           <div className="space-y-3 mb-6">
-            <h2 className="text-lg font-semibold text-gray-700">Existing Players</h2>
-            {players.map(player => (
-              <button
-                key={player.id}
-                onClick={() => handleSelectPlayer(player)}
-                className="w-full bg-white rounded-xl p-4 text-left shadow-md hover:shadow-lg transition-all"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-semibold text-gray-800">{player.name}</div>
-                    <div className="text-sm text-gray-500">
-                      Joined {new Date(player.createdAt).toLocaleDateString()}
+            {playerList.map(player => {
+              const playerTitle = player.title || { name: 'Novato', emoji: '🌱' }
+              return (
+                <button
+                  key={player.id}
+                  onClick={() => handleSelectPlayer(player)}
+                  className="w-full bg-white/10 backdrop-blur rounded-xl p-4 text-left hover:bg-white/20 transition-all"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl">{playerTitle.emoji}</span>
+                        <div>
+                          <div className="font-semibold text-white">{player.name}</div>
+                          <div className="text-xs text-purple-300">{playerTitle.name}</div>
+                        </div>
+                      </div>
+                      <div className="flex gap-3 mt-2 text-xs">
+                        <div>
+                          <span className="text-gray-400">🏆</span>
+                          <span className="text-white ml-1">{player.totalScore || 0}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-400">🎮</span>
+                          <span className="text-white ml-1">{player.gamesPlayed || 0}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-400">⭐</span>
+                          <span className="text-yellow-400 ml-1">{player.bestScore || 0}</span>
+                        </div>
+                      </div>
                     </div>
+                    <div className="text-purple-400 text-xl">→</div>
                   </div>
-                  <div className="text-primary-500">→</div>
-                </div>
-              </button>
-            ))}
+                </button>
+              )
+            })}
           </div>
         )}
 
         {!showCreateForm ? (
           <button
             onClick={() => setShowCreateForm(true)}
-            className="w-full border-2 border-dashed border-primary-300 rounded-xl p-4 text-primary-600 font-semibold hover:bg-primary-50"
+            className="w-full border-2 border-dashed border-purple-400 rounded-xl p-4 text-purple-300 font-semibold hover:bg-purple-900/30"
           >
-            + Create New Player
+            + Criar Novo Jogador
           </button>
         ) : (
-          <div className="bg-white rounded-xl p-4 shadow-md">
+          <div className="bg-white/10 backdrop-blur rounded-xl p-4">
             <input
               type="text"
-              placeholder="Enter player name"
+              placeholder="Nome do jogador"
               value={newPlayerName}
               onChange={(e) => setNewPlayerName(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
               autoFocus
             />
             <div className="flex gap-2">
               <button
                 onClick={handleCreatePlayer}
-                className="flex-1 bg-primary-500 text-white py-2 rounded-lg font-semibold"
+                className="flex-1 bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700"
               >
-                Create
+                Criar
               </button>
               <button
                 onClick={() => setShowCreateForm(false)}
-                className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold"
+                className="flex-1 bg-gray-700 text-gray-300 py-2 rounded-lg font-semibold hover:bg-gray-600"
               >
-                Cancel
+                Cancelar
               </button>
             </div>
           </div>
@@ -96,9 +115,9 @@ export default function ProfilePage() {
 
         <button
           onClick={() => navigate('/')}
-          className="mt-6 w-full text-gray-500 py-2 text-center"
+          className="mt-6 w-full text-gray-400 py-2 text-center hover:text-white"
         >
-          ← Back to Home
+          ← Voltar ao Início
         </button>
       </div>
     </div>

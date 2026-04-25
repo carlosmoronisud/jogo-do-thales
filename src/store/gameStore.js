@@ -1,17 +1,24 @@
-// src/store/gameStore.js
+// src/store/gameStore.js (com logs detalhados)
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { dbService } from '../services/DatabaseService'
 
 const initialState = {
   activePlayer: null,
   players: [],
-  metrics: {},
   progress: {
     unlockedGames: ['NumberShooter'],
     completedGames: {},
     gameScores: {}
   }
+}
+
+const getTitleByScore = (totalScore) => {
+  if (totalScore >= 5000) return { name: 'Mestre dos Números', emoji: '🏆' }
+  if (totalScore >= 3000) return { name: 'Matemático Lendário', emoji: '🌟' }
+  if (totalScore >= 2000) return { name: 'Calculador Avançado', emoji: '📚' }
+  if (totalScore >= 1000) return { name: 'Aprendiz Dedicado', emoji: '🎯' }
+  if (totalScore >= 500) return { name: 'Iniciante Promissor', emoji: '⭐' }
+  return { name: 'Novato', emoji: '🌱' }
 }
 
 export const useGameStore = create(
@@ -20,80 +27,138 @@ export const useGameStore = create(
       ...initialState,
 
       setActivePlayer: (player) => {
+        console.log('🎮 setActivePlayer chamado:', player)
         set({ activePlayer: player })
-        // Load player's metrics when active player changes
-        const playerMetrics = dbService.loadMetrics(player.id)
-        if (playerMetrics) {
-          set({ metrics: playerMetrics })
-        }
-        
-        // Example usage of the [get](cci:1://file:///c:/Users/carlo/Desktop/jogo%20do%20thales/Game_hub/src/store/gameStore.js:91:6-91:36) parameter
-        const currentActivePlayer = get().activePlayer
-        console.log('Current active player:', currentActivePlayer)
       },
 
-      createPlayer: async (name) => {
+      createPlayer: (name) => {
+        console.log('👤 createPlayer chamado para:', name)
         const newPlayer = {
           id: Date.now().toString(),
           name,
           createdAt: new Date().toISOString(),
-          metrics: {
-            accuracy: 0,
-            efficiency: 0,
-            speed: 0,
-            persistence: 0,
-            engagement: 0,
-            gamesPlayed: 0,
-            totalTime: 0
-          }
+          totalScore: 0,
+          gamesPlayed: 0,
+          bestScore: 0,
+          title: { name: 'Novato', emoji: '🌱' }
         }
         
-        await dbService.savePlayer(newPlayer)
+        console.log('📝 Novo jogador criado:', newPlayer)
         
-        set((state) => ({
-          players: [...state.players, newPlayer]
-        }))
+        set((state) => {
+          const newPlayers = [...state.players, newPlayer]
+          console.log('📋 Lista de jogadores atualizada:', newPlayers)
+          return { players: newPlayers }
+        })
+        
+        // Verificar localStorage
+        const stored = localStorage.getItem('game-storage')
+        console.log('💾 localStorage após criar:', stored)
         
         return newPlayer
       },
 
-      updateMetrics: async (playerId, newMetrics) => {
-        await dbService.saveMetrics(playerId, newMetrics)
+      saveGameResult: (playerId, gameScore) => {
+        console.log('💾💾💾 SAVE GAME RESULT CHAMADO 💾💾💾')
+        console.log('Player ID:', playerId)
+        console.log('Game Score:', gameScore)
         
-        set((state) => ({
-          metrics: { ...state.metrics, ...newMetrics }
-        }))
-      },
+        const state = get()
+        console.log('Estado atual da store:', state)
+        
+        const player = state.players.find(p => p.id === playerId)
+        console.log('Jogador encontrado:', player)
+        
+        if (!player) {
+          console.error('❌ Jogador não encontrado! ID:', playerId)
+          return null
+        }
 
-      unlockGame: (gameId) => {
-        set((state) => ({
-          progress: {
-            ...state.progress,
-            unlockedGames: [...state.progress.unlockedGames, gameId]
-          }
-        }))
-      },
-
-      updateGameScore: (gameId, score) => {
-        set((state) => ({
-          progress: {
+        const newTotalScore = (player.totalScore || 0) + gameScore
+        const newGamesPlayed = (player.gamesPlayed || 0) + 1
+        const newBestScore = Math.max(player.bestScore || 0, gameScore)
+        const newTitle = getTitleByScore(newTotalScore)
+        
+        console.log('📊 Novos valores calculados:')
+        console.log('  - Novo total:', newTotalScore)
+        console.log('  - Novas partidas:', newGamesPlayed)
+        console.log('  - Nova melhor pontuação:', newBestScore)
+        console.log('  - Novo título:', newTitle)
+        
+        const updatedPlayer = {
+          ...player,
+          totalScore: newTotalScore,
+          gamesPlayed: newGamesPlayed,
+          bestScore: newBestScore,
+          title: newTitle
+        }
+        
+        console.log('✅ Jogador atualizado:', updatedPlayer)
+        
+        set((state) => {
+          const newPlayers = state.players.map(p => p.id === playerId ? updatedPlayer : p)
+          const newProgress = {
             ...state.progress,
             gameScores: {
               ...state.progress.gameScores,
-              [gameId]: score
+              NumberShooter: Math.max(state.progress.gameScores.NumberShooter || 0, gameScore)
+            },
+            completedGames: {
+              ...state.progress.completedGames,
+              NumberShooter: (state.progress.completedGames.NumberShooter || 0) + 1
             }
           }
-        }))
+          
+          console.log('📦 Setando novo estado:')
+          console.log('  - Players:', newPlayers)
+          console.log('  - Progress:', newProgress)
+          console.log('  - ActivePlayer:', state.activePlayer?.id === playerId ? updatedPlayer : state.activePlayer)
+          
+          return {
+            players: newPlayers,
+            activePlayer: state.activePlayer?.id === playerId ? updatedPlayer : state.activePlayer,
+            progress: newProgress
+          }
+        })
+        
+        // Verificar localStorage após salvar
+        setTimeout(() => {
+          const stored = localStorage.getItem('game-storage')
+          console.log('💾 localStorage após salvar:', stored)
+          if (stored) {
+            const parsed = JSON.parse(stored)
+            console.log('📦 Conteúdo do localStorage parseado:', parsed.state)
+          }
+        }, 100)
+        
+        return { newTotalScore, newBestScore, newTitle, hasNewTitle: newTitle.name !== player.title?.name }
       },
 
-      loadPlayers: async () => {
-        const players = await dbService.loadAllPlayers()
-        set({ players })
+      loadPlayers: () => {
+        const state = get()
+        console.log('🔍 loadPlayers chamado, estado atual:', state)
+        const stored = localStorage.getItem('game-storage')
+        console.log('💾 localStorage em loadPlayers:', stored)
+        return state.players
       }
     }),
     {
       name: 'game-storage',
-      getStorage: () => localStorage
+      storage: {
+        getItem: (name) => {
+          const str = localStorage.getItem(name)
+          console.log('📖 localStorage.getItem:', name, str)
+          return str ? JSON.parse(str) : null
+        },
+        setItem: (name, value) => {
+          console.log('💾 localStorage.setItem:', name, value)
+          localStorage.setItem(name, JSON.stringify(value))
+        },
+        removeItem: (name) => {
+          console.log('🗑️ localStorage.removeItem:', name)
+          localStorage.removeItem(name)
+        }
+      }
     }
   )
 )

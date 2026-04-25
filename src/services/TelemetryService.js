@@ -1,4 +1,4 @@
-// src/services/TelemetryService.js
+// src/services/TelemetryService.js (corrigido - remover saveSession)
 import { dbService } from './DatabaseService'
 
 class TelemetryService {
@@ -26,7 +26,6 @@ class TelemetryService {
       totalEvents: this.sessionEvents.length
     })
     
-    this.saveSession()
     this.currentSessionId = null
     this.sessionEvents = []
   }
@@ -41,30 +40,7 @@ class TelemetryService {
     }
     
     this.sessionEvents.push(event)
-    
-    // Log for development
     console.log(`[Telemetry] ${eventName}:`, payload)
-    
-    // Could send to analytics service here
-    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-      await this.sendToAnalytics(event)
-    }
-  }
-
-  async sendToAnalytics(event) {
-    // Implement analytics API calls here
-    // Example: await fetch('/api/analytics', { method: 'POST', body: JSON.stringify(event) })
-    console.log('[Analytics] Would send:', event)
-  }
-
-  async saveSession() {
-    if (this.currentSessionId && this.sessionEvents.length > 0) {
-      await dbService.saveSession({
-        id: this.currentSessionId,
-        events: this.sessionEvents,
-        timestamp: new Date().toISOString()
-      })
-    }
   }
 
   getSessionEvents() {

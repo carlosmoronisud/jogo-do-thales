@@ -1,4 +1,4 @@
-// src/services/DatabaseService.js
+// src/services/DatabaseService.js (simplificado)
 class DatabaseService {
   constructor() {
     this.dbName = 'EducationalGamesHub'
@@ -23,17 +23,6 @@ class DatabaseService {
         if (!db.objectStoreNames.contains('players')) {
           const playerStore = db.createObjectStore('players', { keyPath: 'id' })
           playerStore.createIndex('name', 'name', { unique: false })
-        }
-        
-        if (!db.objectStoreNames.contains('metrics')) {
-          const metricsStore = db.createObjectStore('metrics', { keyPath: 'playerId' })
-          metricsStore.createIndex('playerId', 'playerId', { unique: true })
-        }
-        
-        if (!db.objectStoreNames.contains('sessions')) {
-          const sessionStore = db.createObjectStore('sessions', { keyPath: 'id' })
-          sessionStore.createIndex('playerId', 'playerId', { unique: false })
-          sessionStore.createIndex('timestamp', 'timestamp', { unique: false })
         }
       }
     })
@@ -63,53 +52,14 @@ class DatabaseService {
     })
   }
 
-  async saveMetrics(playerId, metrics) {
-    await this.init()
-    return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(['metrics'], 'readwrite')
-      const store = transaction.objectStore('metrics')
-      const request = store.put({ playerId, ...metrics })
-      
-      request.onsuccess = () => resolve(metrics)
-      request.onerror = () => reject(request.error)
-    })
-  }
-
   async loadMetrics(playerId) {
-    await this.init()
-    return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(['metrics'], 'readonly')
-      const store = transaction.objectStore('metrics')
-      const request = store.get(playerId)
-      
-      request.onsuccess = () => resolve(request.result || null)
-      request.onerror = () => reject(request.error)
-    })
+    // Simplificado - retorna métricas básicas
+    return { accuracy: 0, efficiency: 0, speed: 0, persistence: 0, engagement: 0 }
   }
 
-  async saveSession(session) {
-    await this.init()
-    return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(['sessions'], 'readwrite')
-      const store = transaction.objectStore('sessions')
-      const request = store.add(session)
-      
-      request.onsuccess = () => resolve(session)
-      request.onerror = () => reject(request.error)
-    })
-  }
-
-  async loadPlayerSessions(playerId) {
-    await this.init()
-    return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(['sessions'], 'readonly')
-      const store = transaction.objectStore('sessions')
-      const index = store.index('playerId')
-      const request = index.getAll(playerId)
-      
-      request.onsuccess = () => resolve(request.result || [])
-      request.onerror = () => reject(request.error)
-    })
+  async saveMetrics(playerId, metrics) {
+    // Não faz nada por enquanto
+    return true
   }
 }
 

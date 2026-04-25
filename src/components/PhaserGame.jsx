@@ -1,4 +1,4 @@
-// src/components/PhaserGame.jsx (garantindo dimensões corretas)
+// src/components/PhaserGame.jsx (corrigido)
 import { useEffect, useRef } from 'react'
 import Phaser from 'phaser'
 
@@ -9,11 +9,17 @@ export default function PhaserGame({ gameId, onComplete, playerId, metrics }) {
   useEffect(() => {
     if (!gameRef.current) return
 
-    if (gameInstance.current) {
-      gameInstance.current.destroy(true)
-    }
+    let isMounted = true
 
-    import('../games/NumberShooter/scenes/NumberShooterScene').then(module => {
+    const initGame = async () => {
+      if (!gameRef.current || !isMounted) return
+
+      if (gameInstance.current) {
+        gameInstance.current.destroy(true)
+        gameInstance.current = null
+      }
+
+      const module = await import('../games/NumberShooter/scenes/NumberShooterScene')
       const NumberShooterScene = module.default
       
       const config = {
@@ -26,15 +32,7 @@ export default function PhaserGame({ gameId, onComplete, playerId, metrics }) {
           mode: Phaser.Scale.RESIZE,
           autoCenter: Phaser.Scale.CENTER_BOTH,
           width: '100%',
-          height: '100%',
-          min: {
-            width: 320,
-            height: 480
-          },
-          max: {
-            width: 1024,
-            height: 768
-          }
+          height: '100%'
         },
         physics: {
           default: 'arcade',
@@ -43,45 +41,49 @@ export default function PhaserGame({ gameId, onComplete, playerId, metrics }) {
             debug: false
           }
         },
-        backgroundColor: '#1a1a2e'
+        backgroundColor: '#0f0c29'
       }
 
       gameInstance.current = new Phaser.Game(config)
       
-      setTimeout(() => {
+      const checkSceneReady = () => {
         if (gameInstance.current) {
           const scene = gameInstance.current.scene.getScene('NumberShooterScene')
           if (scene) {
-            console.log('🎮 Game initialized')
+            console.log('🎮 Game scene found, passing player data. PlayerId:', playerId)
+            // Passar o playerId para a cena
             scene.playerId = playerId
-            scene.initialMetrics = metrics
-            scene.onGameComplete = (result) => {
-              if (onComplete) onComplete(result)
-              setTimeout(() => {
-                if (gameInstance.current) {
-                  gameInstance.current.destroy(true)
-                }
-              }, 1000)
+            scene.onGameComplete = (results) => {
+              console.log('📤 Emitindo onComplete com resultados:', results)
+              if (onComplete) {
+                onComplete(results)
+              }
             }
+          } else {
+            setTimeout(checkSceneReady, 100)
           }
         }
-      }, 100)
-    }).catch(error => {
-      console.error('Error loading game:', error)
-    })
+      }
+      
+      setTimeout(checkSceneReady, 200)
+    }
+
+    initGame()
 
     return () => {
+      isMounted = false
       if (gameInstance.current) {
         gameInstance.current.destroy(true)
+        gameInstance.current = null
       }
     }
-  }, [gameId, playerId, metrics, onComplete])
+  }, [gameId, playerId, onComplete])
 
   return (
-    <div className="relative bg-black rounded-lg overflow-hidden shadow-2xl" style={{ width: '100%', height: '80vh', minHeight: '480px', maxWidth: '100%' }}>
+    <div className="relative bg-black rounded-lg overflow-hidden shadow-2xl" style={{ width: '100%', height: '80vh', minHeight: '500px' }}>
       <div ref={gameRef} style={{ width: '100%', height: '100%' }} />
-      <div className="absolute bottom-2 left-0 right-0 text-center text-white text-xs bg-black bg-opacity-50 py-1 z-10">
-        🎯 Toque nos botões ÷2, ÷3 ou ÷5 | Tempo: 45s | Números vermelhos = PRIMOS
+      <div className="absolute bottom-2 left-0 right-0 text-center text-white text-xs bg-black/50 py-1 z-10">
+        🎯 Toque nos botões para dividir os números | Tempo: 60s
       </div>
     </div>
   )
