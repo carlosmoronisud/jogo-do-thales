@@ -1,4 +1,4 @@
-// src/pages/ProfilePage.jsx (atualizado)
+// src/pages/ProfilePage.jsx (com botão de deletar perfil)
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useGameStore } from '../store/gameStore'
@@ -26,7 +26,34 @@ export default function ProfilePage() {
     navigate('/hub')
   }, [setActivePlayer, navigate])
 
-  // Forçar atualização da lista de jogadores
+  const handleDeletePlayer = useCallback((playerId, playerName) => {
+    if (confirm(`Tem certeza que deseja deletar o perfil "${playerName}"? Todas as estatísticas serão perdidas.`)) {
+      // Recuperar dados do localStorage
+      const stored = localStorage.getItem('game-storage')
+      if (stored) {
+        const data = JSON.parse(stored)
+        const playersList = data.state?.players || []
+        const updatedPlayers = playersList.filter(p => p.id !== playerId)
+        
+        // Se o jogador deletado era o ativo, limpar activePlayer
+        if (data.state?.activePlayer?.id === playerId) {
+          data.state.activePlayer = updatedPlayers.length > 0 ? updatedPlayers[0] : null
+        }
+        
+        data.state.players = updatedPlayers
+        localStorage.setItem('game-storage', JSON.stringify(data))
+        
+        // Recarregar a store
+        loadPlayers()
+        
+        // Se não houver mais jogadores, ir para tela inicial
+        if (updatedPlayers.length === 0) {
+          navigate('/')
+        }
+      }
+    }
+  }, [loadPlayers, navigate])
+
   const playerList = players || []
 
   return (
@@ -34,7 +61,7 @@ export default function ProfilePage() {
       <div className="max-w-md mx-auto">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-white mb-2">🎮 Jogadores</h1>
-          <p className="text-gray-300">Escolha ou crie seu perfil</p>
+          <p className="text-gray-300">Escolha, crie ou delete seu perfil</p>
         </div>
 
         {playerList.length > 0 && (
@@ -42,13 +69,9 @@ export default function ProfilePage() {
             {playerList.map(player => {
               const playerTitle = player.title || { name: 'Novato', emoji: '🌱' }
               return (
-                <button
-                  key={player.id}
-                  onClick={() => handleSelectPlayer(player)}
-                  className="w-full bg-white/10 backdrop-blur rounded-xl p-4 text-left hover:bg-white/20 transition-all"
-                >
+                <div key={player.id} className="bg-white/10 backdrop-blur rounded-xl p-4">
                   <div className="flex items-center justify-between">
-                    <div>
+                    <div className="flex-1 cursor-pointer" onClick={() => handleSelectPlayer(player)}>
                       <div className="flex items-center gap-2">
                         <span className="text-2xl">{playerTitle.emoji}</span>
                         <div>
@@ -71,9 +94,15 @@ export default function ProfilePage() {
                         </div>
                       </div>
                     </div>
-                    <div className="text-purple-400 text-xl">→</div>
+                    <button
+                      onClick={() => handleDeletePlayer(player.id, player.name)}
+                      className="ml-3 p-2 bg-red-500/20 hover:bg-red-500/40 rounded-lg transition-colors"
+                      title="Deletar perfil"
+                    >
+                      <span className="text-red-400 text-xl">🗑️</span>
+                    </button>
                   </div>
-                </button>
+                </div>
               )
             })}
           </div>

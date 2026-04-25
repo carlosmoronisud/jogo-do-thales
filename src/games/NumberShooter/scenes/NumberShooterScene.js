@@ -1,4 +1,4 @@
-// src/games/NumberShooter/scenes/NumberShooterScene.js (com botões em grid responsivo)
+// src/games/NumberShooter/scenes/NumberShooterScene.js (com botão de reinício)
 import Phaser from 'phaser'
 import { telemetryService } from '../../../services/TelemetryService'
 
@@ -78,6 +78,16 @@ export default class NumberShooterScene extends Phaser.Scene {
     return '#FF6B35'
   }
 
+  isPrime(num) {
+    if (num < 2) return false
+    if (num === 2) return true
+    if (num % 2 === 0) return false
+    for (let i = 3; i <= Math.sqrt(num); i += 2) {
+      if (num % i === 0) return false
+    }
+    return true
+  }
+
   create() {
     console.log('✅ Scene created')
     const { width, height } = this.cameras.main
@@ -87,7 +97,6 @@ export default class NumberShooterScene extends Phaser.Scene {
     const isMobile = width < 780
     const config = this.getLevelConfig()
     
-    // Títulos
     this.add.text(width / 2, isMobile ? 20 : 30, `${config.name} - Nível ${this.currentLevel}`, {
       fontSize: isMobile ? '12px' : '16px',
       fill: config.color,
@@ -102,7 +111,6 @@ export default class NumberShooterScene extends Phaser.Scene {
       fontWeight: 'bold'
     }).setOrigin(0.5)
     
-    // Score e Timer
     this.scoreText = this.add.text(15, 10, `${this.score}`, {
       fontSize: isMobile ? '20px' : '28px',
       fill: '#FFD700',
@@ -125,10 +133,8 @@ export default class NumberShooterScene extends Phaser.Scene {
       fontWeight: 'bold'
     }).setOrigin(0.5)
     
-    // Criar botões em grid
     this.createButtonsGrid(config.operations)
     
-    // Linha do chão
     const groundLine = this.add.rectangle(0, height - 65, width, 2, 0xEF233C)
     groundLine.setOrigin(0)
     groundLine.setAlpha(0.5)
@@ -151,7 +157,6 @@ export default class NumberShooterScene extends Phaser.Scene {
   }
 
   createButtonsGrid(operations) {
-    // Limpar botões existentes
     this.buttons.forEach(btn => {
       if (btn.container) btn.container.destroy()
     })
@@ -161,18 +166,13 @@ export default class NumberShooterScene extends Phaser.Scene {
     const height = this.cameras.main.height
     const isMobile = width < 780
     
-    // Configurações dos botões
     const buttonWidth = isMobile ? 70 : 80
     const buttonHeight = isMobile ? 45 : 55
     const buttonSpacing = isMobile ? 8 : 10
     
-    // Calcular quantos botões cabem por linha
     const maxButtonsPerRow = Math.floor((width - 40) / (buttonWidth + buttonSpacing))
     const numRows = Math.ceil(operations.length / maxButtonsPerRow)
-    
-    // Posição Y base (acima da linha do chão)
     const baseY = height - 65 - (numRows * (buttonHeight + buttonSpacing)) + 10
-    
     const btnFontSize = isMobile ? '14px' : '18px'
     
     operations.forEach((operation, index) => {
@@ -186,8 +186,6 @@ export default class NumberShooterScene extends Phaser.Scene {
       const y = baseY + row * (buttonHeight + buttonSpacing) + buttonHeight / 2
       
       const container = this.add.container(x, y)
-      
-      // Cores: números primos em destaque
       const isPrimeOp = this.isPrime(operation)
       const bgColor = isPrimeOp ? 0xEF4444 : 0x4CC9F0
       const hoverColor = isPrimeOp ? 0xdc2626 : 0x3a9bd1
@@ -205,8 +203,6 @@ export default class NumberShooterScene extends Phaser.Scene {
       
       container.add([bg, text])
       container.setDepth(100)
-      
-      // Efeito de transparência suave
       bg.setAlpha(0.85)
       
       bg.on('pointerdown', () => this.shoot(operation))
@@ -223,18 +219,6 @@ export default class NumberShooterScene extends Phaser.Scene {
       
       this.buttons.push({ container, operation, bg })
     })
-    
-    console.log(`📱 Criados ${operations.length} botões em ${numRows} linhas`)
-  }
-
-  isPrime(num) {
-    if (num < 2) return false
-    if (num === 2) return true
-    if (num % 2 === 0) return false
-    for (let i = 3; i <= Math.sqrt(num); i += 2) {
-      if (num % i === 0) return false
-    }
-    return true
   }
 
   spawnTarget() {
@@ -294,7 +278,6 @@ export default class NumberShooterScene extends Phaser.Scene {
       this.createEffect(this.currentTarget.x, this.currentTarget.y, `✓ ${operation}`, '#00ff00')
       
       if (newValue === 1) {
-        // Calcular pontos baseado no número de operações
         let pointsEarned = 0
         if (this.operationsUsed === 1) pointsEarned = 100
         else if (this.operationsUsed === 2) pointsEarned = 50
@@ -311,7 +294,6 @@ export default class NumberShooterScene extends Phaser.Scene {
         this.updateComboDisplay()
         this.checkLevelUp()
         
-        // Animação de destruição
         this.tweens.add({
           targets: this.currentTarget,
           scaleX: 0,
@@ -406,7 +388,6 @@ export default class NumberShooterScene extends Phaser.Scene {
         titleText.setColor(config.color)
       }
       
-      // Recriar botões com novas operações em grid
       this.createButtonsGrid(config.operations)
       this.createEffect(this.cameras.main.width / 2, this.cameras.main.height / 2, `✨ NÍVEL ${newLevel} ✨`, '#FFD700')
       
@@ -446,7 +427,6 @@ export default class NumberShooterScene extends Phaser.Scene {
     
     const { width, height } = this.cameras.main
     const isMobile = width < 780
-    
     const gameScore = this.score
     
     // Salvar no localStorage
@@ -481,45 +461,78 @@ export default class NumberShooterScene extends Phaser.Scene {
     }
     
     // Tela de fim de jogo
-    const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.9).setOrigin(0).setDepth(200)
+    const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.9)
+    overlay.setOrigin(0)
+    overlay.setDepth(200)
     
-    this.add.text(width / 2, height / 2 - 60, 'FIM DE JOGO', {
-      fontSize: isMobile ? '28px' : '36px',
+    const titleY = height / 2 - 80
+    this.add.text(width / 2, titleY, 'FIM DE JOGO', {
+      fontSize: isMobile ? '32px' : '48px',
       fill: '#FFD700',
       fontFamily: 'Arial',
       fontWeight: 'bold'
     }).setOrigin(0.5).setDepth(201)
     
-    this.add.text(width / 2, height / 2 - 10, `${gameScore} pontos`, {
-      fontSize: isMobile ? '24px' : '32px',
+    this.add.text(width / 2, titleY + 50, `${gameScore} pontos`, {
+      fontSize: isMobile ? '28px' : '36px',
       fill: '#ffffff',
       fontFamily: 'Arial',
       fontWeight: 'bold'
     }).setOrigin(0.5).setDepth(201)
     
-    this.add.text(width / 2, height / 2 + 40, `Nível ${this.currentLevel} | ${this.targetsDestroyed} alvos`, {
-      fontSize: isMobile ? '14px' : '16px',
+    this.add.text(width / 2, titleY + 100, `Nível ${this.currentLevel} | ${this.targetsDestroyed} alvos`, {
+      fontSize: isMobile ? '16px' : '20px',
       fill: '#cccccc',
       fontFamily: 'Arial'
     }).setOrigin(0.5).setDepth(201)
     
-    const closeBtn = this.add.rectangle(width / 2, height / 2 + 100, 160, 45, 0x4CC9F0)
-    closeBtn.setInteractive({ useHandCursor: true }).setDepth(201)
-    this.add.text(width / 2, height / 2 + 100, 'FECHAR', {
-      fontSize: isMobile ? '16px' : '18px',
+    // Botões
+    const btnWidth = isMobile ? 140 : 180
+    const btnHeight = isMobile ? 45 : 55
+    const btnSpacing = 20
+    const startX = (width - (btnWidth * 2 + btnSpacing)) / 2
+    
+    // Botão Jogar Novamente
+    const replayBtn = this.add.rectangle(startX + btnWidth / 2, titleY + 170, btnWidth, btnHeight, 0x4CC9F0)
+    replayBtn.setInteractive({ useHandCursor: true })
+    replayBtn.setDepth(201)
+    this.add.text(startX + btnWidth / 2, titleY + 170, '🔄 JOGAR NOVAMENTE', {
+      fontSize: isMobile ? '14px' : '18px',
       fill: '#ffffff',
       fontFamily: 'Arial',
       fontWeight: 'bold'
     }).setOrigin(0.5).setDepth(201)
     
-    closeBtn.on('pointerdown', () => {
+    replayBtn.on('pointerdown', () => {
+      this.scene.restart()
+    })
+    
+    // Botão Sair
+    const exitBtn = this.add.rectangle(startX + btnWidth + btnSpacing + btnWidth / 2, titleY + 170, btnWidth, btnHeight, 0xEF4444)
+    exitBtn.setInteractive({ useHandCursor: true })
+    exitBtn.setDepth(201)
+    this.add.text(startX + btnWidth + btnSpacing + btnWidth / 2, titleY + 170, '🏠 SAIR', {
+      fontSize: isMobile ? '14px' : '18px',
+      fill: '#ffffff',
+      fontFamily: 'Arial',
+      fontWeight: 'bold'
+    }).setOrigin(0.5).setDepth(201)
+    
+    exitBtn.on('pointerdown', () => {
       if (this.onGameComplete) {
         this.onGameComplete({ score: gameScore, level: this.currentLevel, targetsDestroyed: this.targetsDestroyed })
       }
       setTimeout(() => {
         window.location.href = '/hub'
-        this.scene.stop()
       }, 100)
+    })
+    
+    // Efeito de fade in
+    overlay.setAlpha(0)
+    this.tweens.add({
+      targets: overlay,
+      alpha: 0.9,
+      duration: 300
     })
   }
 
